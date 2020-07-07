@@ -51,6 +51,7 @@ class CnnText(nn.Module):
     def forward(self, input):
         """ 
         input : list<list<int>> = list of sentences in batch with shape: (batch_size, num_sequences)
+        return logits, 
         """
         embeddings = self.embedding(
             input)  # (batch_size, num_sequences, embedding_dim)
@@ -63,7 +64,7 @@ class CnnText(nn.Module):
         # all_out.size() = (batch_size, num_kernels*out_channels)
         fc_in = self.dropout(all_out)
         # fc_in.size() = (batch_size, num_kernels*out_channels)
-        logits = self.label(fc_in)
+        logits = self.fc(fc_in)
         # Prediction
         probs = F.softmax(logits)       # (batch_size, num_classes)
         classes = torch.max(probs, 1)[1]  # (batch_size)

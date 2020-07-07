@@ -18,4 +18,5 @@ You will have to install `miniconda`, for that use [following instruction](https
 Once you have installed miniconda, run following commands to set up local virtual `text-classification-pytorch` environment
 
 `conda env create -f environment.yml`
+
 `conda activate text-classification-pytorch`
