@@ -65,8 +65,5 @@ class CnnText(nn.Module):
         fc_in = self.dropout(all_out)
         # fc_in.size() = (batch_size, num_kernels*out_channels)
         logits = self.fc(fc_in)
-        # Prediction
-        probs = F.softmax(logits)       # (batch_size, num_classes)
-        classes = torch.max(probs, 1)[1]  # (batch_size)
 
-        return logits, probs, classes
+        return logits
