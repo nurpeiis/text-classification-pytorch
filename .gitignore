@@ -3,4 +3,5 @@
 *DS_Store
 *.vscode
 *.csv
-experiment.py
+experiment*
+*madar*
