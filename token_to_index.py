@@ -15,7 +15,7 @@ class TokenToIndex:
         """
         self.input_files = input_files
         self.output_dict = output_dict
-        self.token_to_id = dict()
+        self.token_to_id_vocab = dict()
 
     def get_dict(self):
         words = dict()
@@ -36,17 +36,17 @@ class TokenToIndex:
         output = csv.writer(open(self.output_dict, "w"))
         for key, val in words.items():
             output.writerow([key, val])
-        self.token_to_id = words
+        self.token_to_id_vocab = words
 
     def token_to_id(self, token):
         """ 
             token: string = token
             return id : int
         """
-        if token in self.token_to_id:
-            return self.token_to_id[token]
+        if token in self.token_to_id_vocab:
+            return self.token_to_id_vocab[token]
         else:
-            return self.token_to_id[UNK_TOKEN]
+            return self.token_to_id_vocab[UNK_TOKEN]
 
     def __len__(self):
         self.token_to_id
