@@ -39,6 +39,10 @@ class TokenToIndex:
         self.token_to_id = words
 
     def token_to_id(self, token):
+        """ 
+            token: string = token
+            return id : int
+        """
         if token in self.token_to_id:
             return self.token_to_id[token]
         else:
