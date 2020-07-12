@@ -8,14 +8,16 @@ UNK_TOKEN = '<UNK>'
 
 class TokenToIndex:
 
-    def __init__(self, input_files, output_dict):
+    def __init__(self, input_files, output_dict, output_char_dict):
         """
             input_files : list<string> = list of files from which the sentences is going to be extracted
             output_dict : string = name of the file where token to index will be saved
         """
         self.input_files = input_files
         self.output_dict = output_dict
+        self.output_char_dict = output_char_dict
         self.token_to_id_vocab = dict()
+        self.char_to_id_vocab = dict()
 
     def get_dict(self):
         words = dict()
@@ -38,6 +40,26 @@ class TokenToIndex:
             output.writerow([key, val])
         self.token_to_id_vocab = words
 
+    def get_char_dict(self):
+        characters = dict()
+        counter = 2
+        characters[PAD_TOKEN] = 0
+        characters[UNK_TOKEN] = 1
+        for file in self.input_files:
+            df = pd.read_csv(file, delimiter='\t', header=0)
+            tmp_sentences = df['original_sentence']
+            for sentence in tmp_sentences:
+                sentence = list(sentence)
+                for character in sentence:
+                    if (character in characters) == False:
+                        characters[character] = counter
+                        counter = counter + 1
+
+        output = csv.writer(open(self.output_char_dict, "w"))
+        for key, val in characters.items():
+            output.writerow([key, val])
+        self.token_to_id_vocab = characters
+
     def token_to_id(self, token):
         """ 
             token: string = token
@@ -48,5 +70,12 @@ class TokenToIndex:
         else:
             return self.token_to_id_vocab[UNK_TOKEN]
 
-    def __len__(self):
-        self.token_to_id
+    def char_to_id_vocab(self, character):
+        """ 
+            character: char = character
+            return id : int
+        """
+        if character in self.character_to_id_vocab:
+            return self.character_to_id_vocab[character]
+        else:
+            return self.character_to_id_vocab[UNK_TOKEN]

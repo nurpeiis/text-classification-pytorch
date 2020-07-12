@@ -5,6 +5,7 @@ import torch.optim as optim
 from torch import autograd, optim, nn
 from torch.utils.data import DataLoader
 from models.cnn import CnnText
+from models.lstm import LstmText
 from data import TextualDataset
 from token_to_index import TokenToIndex
 
@@ -106,18 +107,26 @@ def main():
     data_train = TextualDataset(
         train_file, token_to_index, label_to_id)
 
-    model = CnnText(len(data_train.vocab), 128, len(data_train.classes),
-                    128, [3, 4, 5], 0.1)
+    # model = CnnText(len(data_train.vocab), 128, len(data_train.classes)                128, [3, 4, 5], 0.1)
+    model = LstmText(len(data_train.vocab), 128,
+                     len(data_train.classes), 256, 0.1)
     data_eval = TextualDataset(
         '../Capstone/hierarchical-did/data_processed/madar_shared_task1/MADAR-Corpus-26-dev.tsv', token_to_index, label_to_id)
+    data_test = TextualDataset(
+        '../Capstone/hierarchical-did/data_processed/madar_shared_task1/MADAR-Corpus-26-test.tsv', token_to_index, label_to_id)
+
+    max_val_accuracy = 0
     for i in range(10):
         print(
             "==================== Epoch: {} ====================".format(i))
         # seed
         train_loss, train_acc = train(model, data_train)
         val_loss, val_acc = eval(model, data_eval)
-
-        print(f'Epoch: {i+1:02}, Train Loss: {train_loss:.3f}, Train Acc: {train_acc:.2f}%, Val. Loss: {val_loss:3f}, Val. Acc: {val_acc:.2f}%')
+        test_loss, test_acc = eval(model, data_test)
+        if val_acc > max_val_accuracy:
+            torch.save(model.state_dict(), 'model.pt')
+            max_val_accuracy = val_acc
+        print(f'Epoch: {i+1:02}, Train Loss: {train_loss:.3f}, Train Acc: {train_acc:.2f}%, Val. Loss: {val_loss:3f}, Val. Acc: {val_acc:.2f}%, Test. Loss: {test_loss:3f}, Test. Acc: {test_acc:.2f}%')
 
 
 if __name__ == '__main__':
